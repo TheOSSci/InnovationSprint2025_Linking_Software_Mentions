@@ -1,0 +1,4 @@
+duckdb
+python-dotenv
+loguru
+httpx
