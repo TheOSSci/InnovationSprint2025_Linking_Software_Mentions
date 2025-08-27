@@ -33,6 +33,7 @@ def get_duckdb_connection():
     return conn
 
 def extract_and_load_cord_dataset(conn):
+    logger.info("Extracting and loading CORD-19 software mentions dataset")
     settings = get_settings()
     sql = f"""copy (
     select * 
@@ -42,9 +43,11 @@ def extract_and_load_cord_dataset(conn):
 'r2://{settings['r2_bucket_name']}/{settings['r2_base_directory']}/czi/cord19_software_mentions.parquet' (format parquet, compression zstd);
     """
     conn.execute(sql)
+    logger.info(f"Completed loading CORD-19 software mentions dataset to r2://{settings['r2_bucket_name']}/{settings['r2_base_directory']}/czi/cord19_software_mentions.parquet")
 
 def extract_and_load_softcite_v2(conn):
     settings = get_settings()
+    logger.info("Extracting and loading Softcite v2 dataset")
     sql = f"""
     copy (
         select unnest(documents, recursive:=true)
@@ -54,8 +57,8 @@ def extract_and_load_softcite_v2(conn):
     'r2://{settings['r2_bucket_name']}/{settings['r2_base_directory']}/softcite_v2/softcite_corpus-full.parquet' (format parquet, compression zstd);
     """
     conn.execute(sql)
-    
-    
+    logger.info(f"Completed loading Softcite v2 dataset to r2://{settings['r2_bucket_name']}/{settings['r2_base_directory']}/softcite_v2/softcite_corpus-full.parquet")
+
 if __name__ == "__main__":
     conn = get_duckdb_connection()
     extract_and_load_cord_dataset(conn)
